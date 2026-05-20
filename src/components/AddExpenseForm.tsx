@@ -80,11 +80,25 @@ export function AddExpenseForm({ members, onAdd }: AddExpenseFormProps) {
 
           <div className="space-y-1.5">
             <Label className="text-xs font-medium text-muted-foreground">Who paid?</Label>
-            <Select value={paidBy} onValueChange={setPaidBy}>
+            <Select value={paidBy} onValueChange={(value) => {
+              if (value === "select-all") {
+                // When "Select all" is clicked, auto-select all members in split among
+                setSplitAmong(members.map((m) => m.id));
+                setSplitAmong(members.map((m) => m.id));
+                if (members.length > 0) {
+                  setPaidBy(members[0].id);
+                }
+              } else {
+                setPaidBy(value);
+              }
+            }}>
               <SelectTrigger className="rounded-xl h-10 shadow-soft bg-background">
                 <SelectValue placeholder="Select member" />
               </SelectTrigger>
               <SelectContent className="rounded-xl">
+                <SelectItem value="select-all">
+                  <span className="font-medium text-primary">Select all</span>
+                </SelectItem>
                 {members.map((m) => (
                   <SelectItem key={m.id} value={m.id}>
                     <span className="flex items-center gap-2">

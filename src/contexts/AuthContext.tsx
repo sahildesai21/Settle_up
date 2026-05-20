@@ -119,9 +119,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    // Clear any cached session on mount
-    firebaseSignOut(auth);
-    
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (!firebaseUser) {
         setCurrentUser(null);

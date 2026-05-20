@@ -7,15 +7,22 @@ interface AddMemberFormProps {
   onAdd: (name: string, email: string) => void | Promise<void>;
 }
 
+const isValidEmail = (email: string): boolean => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
 export function AddMemberForm({ onAdd }: AddMemberFormProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+
+  const isFormValid = name.trim() && email.trim() && isValidEmail(email.trim());
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmedName = name.trim();
     const trimmedEmail = email.trim().toLowerCase();
-    if (!trimmedName || !trimmedEmail) return;
+    if (!trimmedName || !trimmedEmail || !isValidEmail(trimmedEmail)) return;
     await onAdd(trimmedName, trimmedEmail);
     setName("");
     setEmail("");
@@ -37,7 +44,7 @@ export function AddMemberForm({ onAdd }: AddMemberFormProps) {
         onChange={(e) => setEmail(e.target.value)}
         className="flex-1 h-10 rounded-xl shadow-soft bg-card"
       />
-      <Button type="submit" size="sm" className="gap-1.5 h-10 rounded-xl gradient-primary border-0 shadow-glow hover:opacity-90 transition-opacity px-4">
+      <Button type="submit" disabled={!isFormValid} size="sm" className="gap-1.5 h-10 rounded-xl gradient-primary border-0 shadow-glow hover:opacity-90 transition-opacity px-4 disabled:opacity-50 disabled:cursor-not-allowed">
         <UserPlus className="h-4 w-4" />
         Add
       </Button>
